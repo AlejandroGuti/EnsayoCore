@@ -41,7 +41,7 @@ namespace Mod5Core.Controllers
         [HttpGet("{id}", Name = "ObtenerAutor")]
         public async Task<ActionResult<AutorDTO>> Get(int id, string param2)
         {
-            Entities.Autor autor = await context.Autores.FirstOrDefaultAsync(x => x.Id == id);
+            Autor autor = await context.Autores.FirstOrDefaultAsync(x => x.Id == id);
             if (autor == null)
             {
                 return NotFound();
