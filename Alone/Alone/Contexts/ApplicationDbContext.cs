@@ -15,6 +15,8 @@ namespace Alone.Contexts
         }
         public DbSet<Autor> Autors { get; set; }
         public DbSet<Libro> Libros { get; set; }
-        public DbSet<Cosa> Babosa { get; set; }
+        public DbSet<Cosa> CosaAs { get; set; }
+        public DbSet<CosaACosaB> CosaACosaBs { get; set; }
+        public DbSet<CosaB> CosaBs { get; set; }
     }
 }

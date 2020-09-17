@@ -13,6 +13,6 @@ namespace Alone.Entities
         public string Titulo { get; set; }
         [Required]
         public int AutorId { get; set; }
-        public Autor Autor { get; set; }
+        public Autor Autores { get; set; }
     }
 }

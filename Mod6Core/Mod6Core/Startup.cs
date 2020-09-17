@@ -2,19 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Alone.Contexts;
-using Alone.Entities;
-using Alone.Models;
-using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace Alone
+namespace Mod6Core
 {
     public class Startup
     {
@@ -29,20 +24,6 @@ namespace Alone
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-            //DB
-            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            //Serialization
-            services.AddControllers()
-                    .AddNewtonsoftJson(options =>
-                     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
-            //Automapper
-            services.AddAutoMapper(configuration => {
-
-                configuration.CreateMap<Autor, AutorDTO>().ReverseMap();
-                configuration.CreateMap<Libro, LibroDTO>().ReverseMap();
-                //configuration.CreateMap< , >().ReverseMap();
-            }, typeof(Startup));
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

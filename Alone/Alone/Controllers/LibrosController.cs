@@ -28,9 +28,54 @@ namespace Alone.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<LibroDTO>>> Get()
         {
-            var libros = await context.Libros.ToListAsync();
+            List<Libro> libros = await context.Libros.Include(x=>x.Autores).ToListAsync();
+            /*var librosDTO = mapped.Map<List<LibroDTO>>(libros);
+            var ensayo = librosDTO.FirstOrDefault(x => x.Autor.Id == 4);
+            var librosDTO1 = mapped.Map<List<LibroDTO>>(ensayo);
+            */
+
             var librosDTO = mapped.Map<List<LibroDTO>>(libros);
-            return librosDTO;
+
+            //**************Para sacar lsita de nombres de autores por libro
+           /* List<string> autores = new List<string>();
+
+            foreach(Libro libro in libros)
+            {
+                foreach(Autor autor in libro.Autores)
+                {
+                    autores.Add(autor.Nombre);
+                }
+            }
+
+            List<LibroDTO> model = libros.Select(l => new LibroDTO
+            { 
+                Autores = autores,
+                AutorId = l.AutorId,
+                Id = l.Id,
+                Titulo = l.Titulo
+            }).ToList();*/
+            
+            var x = librosDTO.Select(x => new  
+            { 
+                x.Autor.Nombre, 
+                x.Autor.Id,
+                x.Titulo
+            }).Where(x => x.Id == 4).ToList();
+
+            List<OtroDTO> y = new List<OtroDTO>();
+        
+            foreach (var k in x)
+            {
+                OtroDTO otroDTO = new OtroDTO();
+                otroDTO.Nombre = k.Nombre;
+                otroDTO.Id = k.Id;
+                otroDTO.Titulo = k.Titulo;
+                y.Add(otroDTO);
+
+            }
+            //var S = mapped.Map<List<OtroDTO>>(x);
+            var S = mapped.Map<List<OtroDTO>>(y);
+            return Ok(S);
         }
         [HttpGet("{id}",Name ="SearchLibro")]
         public async Task<ActionResult<LibroDTO>> Get(int id)

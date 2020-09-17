@@ -5,12 +5,11 @@ using System.Threading.Tasks;
 
 namespace Alone.Entities
 {
-    public class Cosa
+    public class CosaB
     {
         public int id { get; set; }
-        public string Name { get; set; }
-        public int Total { get; set; }
-
+        public string NameB { get; set; }
+        public int TotalB { get; set; }
         public List<CosaACosaB> CosaACosaB { get; set; }
     }
 }
