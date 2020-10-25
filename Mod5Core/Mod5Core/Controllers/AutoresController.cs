@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Mod5Core.Contexts;
 using Mod5Core.Entities;
 using Mod5Core.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -30,12 +31,19 @@ namespace Mod5Core.Controllers
               return context.Autores.FirstOrDefault();
           }*/
         /**/
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<AutorDTO>>> Get()
+        [HttpGet(Name ="ListAutores")]
+        public async Task<ActionResult<ColeccionDeRecursos<AutorDTO>>> Get(bool IncludeHATEOAS =false)
         {
             var autores = await context.Autores.ToListAsync();
             var autoresDTO = mapper.Map<List<AutorDTO>>(autores);
-            return autoresDTO;
+
+            var result = new ColeccionDeRecursos<AutorDTO>(autoresDTO);
+            if (IncludeHATEOAS) { 
+            autoresDTO.ForEach(x => GenerateEnlaces(x));
+            result.Enlaces.Add(new Enlace(href: Url.Link("CreateAutor", new { }), rel: "Create_Autores", method: "POST"));
+            result.Enlaces.Add(new Enlace(href: Url.Link("ListAutores", new { }), rel: "Obtain_Autores", method: "GET"));
+            }
+            return result;
         }
 
         [HttpGet("{id}", Name = "ObtenerAutor")]
@@ -47,10 +55,19 @@ namespace Mod5Core.Controllers
                 return NotFound();
             }
             AutorDTO autorDTO = mapper.Map<AutorDTO>(autor);
+            GenerateEnlaces(autorDTO);
             return autorDTO;
 
         }
-         [HttpPost]
+
+        private void GenerateEnlaces(AutorDTO model)
+        {
+            model.Enlaces.Add(new Enlace(href: Url.Link("ObtenerAutor", new { id=model.Id }), rel: "Obtain_Autor", method: "GET"));
+            model.Enlaces.Add(new Enlace(href: Url.Link("UpdateAutor", new { id = model.Id }), rel: "Update_Autor", method: "Put"));
+            model.Enlaces.Add(new Enlace(href: Url.Link("DeleteAutor", new { id = model.Id }), rel: "Delete_Autor", method: "Delete"));
+        }
+
+        [HttpPost(Name ="CreateAutor")]
          public async Task<ActionResult> Post([FromBody] AutorCreacionDTO autorCreationDTO)
          {
             var autor = mapper.Map<Autor>(autorCreationDTO);
@@ -61,7 +78,7 @@ namespace Mod5Core.Controllers
 
          }
         
-         [HttpPut("{id}")]
+         [HttpPut("{id}", Name = "UpdateAutor")]
          public async Task<ActionResult> Put(int id, [FromBody] AutorActualizactionDTO autorActualization)
          {
             var autor = mapper.Map<Autor>(autorActualization);
@@ -70,7 +87,7 @@ namespace Mod5Core.Controllers
              await context.SaveChangesAsync();
              return NoContent();
         }
-        [HttpPatch("{id}")]
+        [HttpPatch("{id}", Name ="PatchAutor")]
 
         public async Task<ActionResult> Patch
             (int id, [FromBody] JsonPatchDocument<AutorActualizactionDTO> patchDocument) 
@@ -95,7 +112,7 @@ namespace Mod5Core.Controllers
         }
         
         
-         [HttpDelete("{id}")]
+         [HttpDelete("{id}", Name ="DeleteAutor")]
          public async Task<ActionResult<Autor>> Delete(int id)
          {
 

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Mod5Core.Models
 {
-    public class AutorDTO
+    public class AutorDTO :Recurso
     {
         public int Id { get; set; }
         [Required]
